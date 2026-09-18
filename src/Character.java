@@ -8,8 +8,9 @@ public class Character {
     double gold;
     boolean isAlive;
     char type;
+    Weapon weapon;
 
-    Character(String name, int hp, int maxHp, int level, int xp, double gold, boolean isAlive, char type) {
+    Character(String name, int hp, int maxHp, int level, int xp, double gold, boolean isAlive, char type, Weapon weapon) {
         this.name = name;
         this.hp = hp;
         this.maxHp = maxHp;
@@ -18,6 +19,7 @@ public class Character {
         this.gold = gold;
         this.isAlive = isAlive;
         this.type = type;
+        this.weapon = weapon;
     }
 
     void printCharacterSheet() {
@@ -47,7 +49,7 @@ public class Character {
     void printSmallCharacterSheet() {
         System.out.println("=== " + this.name + " (" + this.type + ")" + " ===");
         System.out.print("Level: " + this.level + " | ");
-        System.out.println("Health: " + this.hp + "/" + this.maxHp + " | ");
+        System.out.print("Health: " + this.hp + "/" + this.maxHp + " | ");
         System.out.println("Gold: " + this.gold);
         System.out.println();
 
@@ -137,7 +139,7 @@ public class Character {
     }
 
     void attack(Character c) {
-        int damage = 25;
+        int damage = this.weapon.damage;
         System.out.println(this.name + " attacks " + c.name + " for " + damage + " damage!");
         c.takeDamage(damage);
     }

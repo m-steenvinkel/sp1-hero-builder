@@ -2,28 +2,51 @@ import java.util.Scanner;
 
 public class Game {
     Scanner scanner;
-    Character c1;
-    Character c2;
+    Character hero;
+    Character enemy;
+    Print print;
 
-    public Game(Scanner scanner, Character c1, Character c2) {
+    public Game(Scanner scanner, Character hero, Character enemy, Print print) {
         this.scanner = scanner;
-        this.c1 = c1;
-        this.c2 = c2;
+        this.hero = hero;
+        this.enemy = enemy;
+        this.print = print;
+    }
+
+    void mainMenu() {
+        print.welcome();
+        print.menu();
+        String userAction = getUserAction();
+        if (userAction.equals("Start")) {
+            runGame();
+        } else if (userAction.equals("Exit")) {
+            System.out.println("Exiting");
+        } else {
+            System.out.println("Invalid command");
+        }
     }
 
     void runGame() {
+        boolean running = true;
 
-        System.out.println("Welcome to my game");
-
-        combat();
-
+        while (running) {
+            enemy.hp = enemy.maxHp;
+            enemy.isAlive = true;
+            combat();
+            if (!hero.isAlive) {
+                running = false;
+                System.out.println(hero.name + " has been killed. Game over.");
+            }
+        }
+        mainMenu();
     }
-    void combat() {
-        System.out.println("You have encountered a " + c2.name);
 
-        while (c1.isAlive && c2.isAlive) {
-            c1.printSmallCharacterSheet();
-            c2.printSmallCharacterSheet();
+    void combat() {
+        print.enemyEncounter(enemy);
+
+        while (hero.isAlive && enemy.isAlive) {
+            hero.printSmallCharacterSheet();
+            enemy.printSmallCharacterSheet();
             System.out.println("Choose action:");
             System.out.println("1. Attack");
             System.out.println("2. Heal");
@@ -33,19 +56,32 @@ public class Game {
             scanner.nextLine();
 
             if (input == 1) {
-                c1.attack(c2);
+                hero.attack(enemy);
             } /*else if (input == 2) {
                 if (hasHealthPotion()) {
                     heal(25);
                 }
                 */
-            if (c2.isAlive) {
-                c2.attack(c1);
+            if (enemy.isAlive) {
+                enemy.attack(hero);
             } else {
-                System.out.println(c2.name + " has been killed.");
+                System.out.println(enemy.name + " has been killed.");
+                System.out.println();
             }
 
 
         }
+    }
+
+    String getUserAction() {
+        int input = scanner.nextInt();
+        scanner.nextLine();
+        String action = "";
+        if (input == 1) {
+            action = "Start";
+        } else if (input == 2) {
+            action = "Exit";
+        }
+        return action;
     }
 }

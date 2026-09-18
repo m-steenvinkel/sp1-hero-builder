@@ -1,21 +1,26 @@
 import java.util.Scanner;
 
 public class Main {
-    Character hero = new Character("Ragnar", 85, 100, 5, 2300, 156.5, true, 'W');
-    Character enemy = new Character ("Goblin", 50, 50, 3, 0, 0, true, 'R');
+    Weapon sword = new Weapon("Sword", 20, 100);
+    Weapon dagger = new Weapon("Dagger", 15, 100);
+
+    Character hero = new Character("Ragnar", 85, 100, 5, 2300, 156.5, true, 'W', sword);
+    Character enemy = new Character ("Goblin", 50, 50, 3, 0, 0, true, 'R', dagger);
+
 
     String[] items = {"Sword", "Shield", "Potion"};
 
     void main() {
         Scanner scanner = new Scanner(System.in);
 
-        Game game = new Game(scanner, hero, enemy);
+        Print print = new Print();
 
-        game.runGame();
+        Game game = new Game(scanner, hero, enemy, print);
 
 
+        game.mainMenu();
 
-        //boolean running = true;
+
 
 
 
