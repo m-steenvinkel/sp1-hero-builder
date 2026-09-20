@@ -8,9 +8,11 @@ public class Character {
     double gold;
     boolean isAlive;
     char type;
-    Weapon weapon;
+    Weapon[] weapons;
+    int equippedWeaponIndex;
+    Item healthPotion;
 
-    Character(String name, int hp, int maxHp, int level, int xp, double gold, boolean isAlive, char type, Weapon weapon) {
+    Character(String name, int hp, int maxHp, int level, int xp, double gold, boolean isAlive, char type, Weapon[] weapons, Item healthPotion) {
         this.name = name;
         this.hp = hp;
         this.maxHp = maxHp;
@@ -19,7 +21,8 @@ public class Character {
         this.gold = gold;
         this.isAlive = isAlive;
         this.type = type;
-        this.weapon = weapon;
+        this.weapons = weapons;
+        this.healthPotion = healthPotion;
     }
 
     void printCharacterSheet() {
@@ -29,7 +32,7 @@ public class Character {
         System.out.println("Class: " + this.type);
         System.out.println("Level: " + this.level);
         System.out.println("Health: " + this.hp + "/" + this.maxHp);
-        System.out.println("XP: " + this.xp);
+        System.out.println("XP: " + this.xp + "/" + 1000 * this.level);
         System.out.println("Gold: " + this.gold);
         System.out.println("Alive: " + this.isAlive);
         System.out.println();
@@ -55,9 +58,21 @@ public class Character {
 
     }
 
+
+    void printWeapons() {
+        System.out.println("=== WEAPONS ===");
+        for (int i = 0; i < weapons.length; i++) {
+            if (weapons[i] != null) {
+                System.out.print(i + 1 + ". Name: " + weapons[i].name);
+                System.out.print(" | Damage: " + weapons[i].damage);
+                System.out.println(" | Durability: " + weapons[i].durability);
+            }
+        }
+        System.out.println();
+    }
+
     void takeDamage(int amount) {
 
-        int tempValue = this.hp;
         this.hp -= amount;
 
         if (isAlive()) {
@@ -65,18 +80,6 @@ public class Character {
         } else {
             isAlive = false;
         }
-
-        /*
-        if (isAlive) {
-            System.out.println(name + " is still alive.");
-        } else {
-            System.out.println(name + " is dead.");
-        }
-
-         */
-
-        System.out.println();
-
     }
 
     void heal(int amount) {
@@ -100,6 +103,7 @@ public class Character {
 
     void addGold(double amount) {
         this.gold += amount;
+        System.out.println(this.name + " gained " + amount + " gold");
     }
 
     boolean removeGold(double amount) {
@@ -115,7 +119,8 @@ public class Character {
         this.xp += amount;
 
         if (this.xp >= (1000 * this.level)) {
-            System.out.println("Ready to level up!");
+            levelUp();
+            System.out.println(this.name + " has leveled up!");
         }
     }
 
@@ -139,9 +144,17 @@ public class Character {
     }
 
     void attack(Character c) {
-        int damage = this.weapon.damage;
+        int damage = this.weapons[equippedWeaponIndex].damage;
         System.out.println(this.name + " attacks " + c.name + " for " + damage + " damage!");
         c.takeDamage(damage);
+    }
+
+
+    void victoryReward() {
+        this.addXP(1500);
+        this.heal(20);
+        this.addGold(250);
+        System.out.println();
     }
 
 
