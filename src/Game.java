@@ -54,7 +54,7 @@ public class Game {
             enemy.printSmallCharacterSheet();
             System.out.println("Choose action:");
             System.out.println("1. Attack");
-            System.out.println("2. Heal (Potions: " + hero.healthPotion.amount + ")");
+            System.out.println("2. Heal " + hero.healthPotion.healAmount + " (Potions: " + hero.healthPotion.amount + ")");
             System.out.println();
             if (hero.isHealthCritical()) {
                 System.out.println(hero.name + "s health is critically low, it is recommended to heal");
@@ -65,8 +65,10 @@ public class Game {
 
             if (input == 1) {
                 hero.attack(enemy);
+                hero.weapons[hero.equippedWeaponIndex].durability -= 1;
             } else if (input == 2 && hero.healthPotion.amount > 0 ) {
-                hero.heal(50);
+                hero.heal(hero.healthPotion.healAmount);
+                hero.healthPotion.amount--;
             }
 
             if (enemy.isAlive) {
@@ -76,6 +78,7 @@ public class Game {
                 System.out.println(enemy.name + " has been killed.");
                 System.out.println();
                 hero.victoryReward();
+                hero.createWeapon();
 
                 enemy.levelUp();
                 enemy.weapons[enemy.equippedWeaponIndex].damage += 5;
@@ -91,11 +94,7 @@ public class Game {
 
     void outOfCombatMenu() {
         hero.printCharacterSheet();
-
-        System.out.println("Choose action: ");
-        System.out.println("1. Enter dungeon");
-        System.out.println("2. Enter shop");
-        System.out.println("3. Change weapon");
+        print.outOfCombatMenu();
 
         int userInput = getUserAction();
 
@@ -109,6 +108,8 @@ public class Game {
             shop();
         } else if (userInput == 3) {
             chooseWeapon();
+        } else if (userInput == 4) {
+            mainMenu();
         }
 
     }
@@ -122,27 +123,52 @@ public class Game {
 
     void shop() {
         double potionPrice = 300;
+        double potionUpgradePrice = 1000;
         int potionStock = 5;
-        System.out.println("=== SHOP ===");
-        System.out.println("1. Health potion | " + potionPrice + " | Stock: " + potionStock);
-        System.out.println("2. Exit shop");
-        System.out.println();
-        System.out.println("Gold : " + hero.gold);
-        System.out.println();
-        int userInput = getUserAction();
+        boolean inShop = true;
 
-        if (userInput == 1) {
-            if (hero.removeGold(potionPrice)) {
-                hero.healthPotion.amount++;
-                System.out.println("You have bought a health potion");
-                System.out.println();
-            } else {
-                System.out.println("You have insufficient funds");
-                System.out.println();
-            }
-        } else if (userInput == 2) {
-            System.out.println("Exiting shop");
+
+        while (inShop) {
+            System.out.println("=== SHOP ===");
+            System.out.println("1. Health potion | Price: " + potionPrice + " Gold | Stock: " + potionStock);
+            System.out.println("2. Upgrade health potion " + hero.healthPotion.healAmount + " -> " + (hero.healthPotion.healAmount + 50) + " | Price: " + potionUpgradePrice + " Gold");
+            System.out.println("3. Exit shop");
             System.out.println();
+            System.out.println("Gold : " + hero.gold);
+            System.out.println();
+            int userInput = getUserAction();
+
+
+            switch (userInput) {
+                case 1:
+                    if (hero.removeGold(potionPrice)) {
+                        hero.healthPotion.amount++;
+                        System.out.println("You have bought a health potion");
+                        System.out.println();
+                    } else {
+                        System.out.println("You have insufficient funds");
+                        System.out.println();
+                    }
+                    break;
+                case 2:
+                    if (hero.removeGold(potionUpgradePrice)) {
+                        hero.healthPotion.increaseHealAmount();
+                        potionUpgradePrice += 1000;
+                        System.out.println("You have upgraded your health potion");
+                        System.out.println();
+                    } else {
+                        System.out.println("You have insufficient funds");
+                        System.out.println();
+                    }
+                    break;
+                case 3:
+                    inShop = false;
+                    System.out.println("Exiting shop");
+                    System.out.println();
+                    break;
+                default:
+                    print.invalidCommand();
+            }
         }
     }
 }

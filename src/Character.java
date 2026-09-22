@@ -53,7 +53,7 @@ public class Character {
         System.out.println("=== " + this.name + " (" + this.type + ")" + " ===");
         System.out.print("Level: " + this.level + " | ");
         System.out.print("Health: " + this.hp + "/" + this.maxHp + " | ");
-        System.out.println("Gold: " + this.gold);
+        System.out.println("Damage: " + this.weapons[equippedWeaponIndex].damage);
         System.out.println();
 
     }
@@ -107,7 +107,7 @@ public class Character {
     }
 
     boolean removeGold(double amount) {
-        if (amount < this.gold) {
+        if (amount <= this.gold) {
             this.gold -= amount;
             return true;
         } else {
@@ -154,6 +154,21 @@ public class Character {
         this.addXP(1500);
         this.heal(20);
         this.addGold(250);
+        System.out.println();
+    }
+
+    void createWeapon() {
+        int min = 20 + this.level;
+        int max = min + 3 * this.level;
+        int randomDamage = min + (int)(Math.random() * ((max - min) + 1));
+        int i = 0;
+        for (i = 0; i < weapons.length; i++) {
+            if (weapons[i] == null) {
+                weapons[i] = new Weapon("Sword " + i, randomDamage, 100);
+                break;
+            }
+        }
+        System.out.println(this.name + " has recieved a new weapon: " + weapons[i].name);
         System.out.println();
     }
 
