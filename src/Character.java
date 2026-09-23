@@ -1,12 +1,12 @@
 
 public class Character {
-    String name;
-    int hp;
-    int maxHp;
-    int level;
-    int xp;
-    double gold;
-    boolean isAlive;
+    private String name;
+    private int hp;
+    private int maxHp;
+    private int level;
+    private int xp;
+    private double gold;
+    private boolean isAlive;
     char type;
     Weapon[] weapons;
     int equippedWeaponIndex;
@@ -23,6 +23,18 @@ public class Character {
         this.type = type;
         this.weapons = weapons;
         this.healthPotion = healthPotion;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public double getGold() {
+        return this.gold;
+    }
+
+    public boolean getIsAlive() {
+        return this.isAlive;
     }
 
     void printCharacterSheet() {
@@ -170,6 +182,15 @@ public class Character {
         }
         System.out.println(this.name + " has recieved a new weapon: " + weapons[i].name);
         System.out.println();
+    }
+
+    public void equip(int index) {
+        this.equippedWeaponIndex = index - 1;
+    }
+
+    public void revive() {
+        this.hp = this.maxHp;
+        this.isAlive = true;
     }
 
 

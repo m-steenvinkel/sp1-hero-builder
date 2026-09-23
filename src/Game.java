@@ -33,14 +33,13 @@ public class Game {
         boolean running = true;
 
         while (running) {
-            enemy.hp = enemy.maxHp;
-            enemy.isAlive = true;
+            enemy.revive();
 
             outOfCombatMenu();
 
-            if (!hero.isAlive) {
+            if (!hero.getIsAlive()) {
                 running = false;
-                System.out.println(hero.name + " has been killed. Game over.");
+                System.out.println(hero.getName() + " has been killed. Game over.");
             }
         }
         mainMenu();
@@ -49,7 +48,7 @@ public class Game {
     void combat() {
         print.enemyEncounter(enemy);
 
-        while (hero.isAlive && enemy.isAlive) {
+        while (hero.getIsAlive() && enemy.getIsAlive()) {
             hero.printSmallCharacterSheet();
             enemy.printSmallCharacterSheet();
             System.out.println("Choose action:");
@@ -57,7 +56,7 @@ public class Game {
             System.out.println("2. Heal " + hero.healthPotion.healAmount + " (Potions: " + hero.healthPotion.amount + ")");
             System.out.println();
             if (hero.isHealthCritical()) {
-                System.out.println(hero.name + "s health is critically low, it is recommended to heal");
+                System.out.println(hero.getName() + "s health is critically low, it is recommended to heal");
                 System.out.println();
             }
 
@@ -71,11 +70,11 @@ public class Game {
                 hero.healthPotion.amount--;
             }
 
-            if (enemy.isAlive) {
+            if (enemy.getIsAlive()) {
                 enemy.attack(hero);
                 System.out.println();
             } else {
-                System.out.println(enemy.name + " has been killed.");
+                System.out.println(enemy.getName() + " has been killed.");
                 System.out.println();
                 hero.victoryReward();
                 hero.createWeapon();
@@ -117,7 +116,7 @@ public class Game {
     void chooseWeapon() {
         hero.printWeapons();
         System.out.println("Type a number to choose your weapon");
-        hero.equippedWeaponIndex = getUserAction() - 1;
+        hero.equip(getUserAction());
         System.out.println();
     }
 
@@ -134,7 +133,7 @@ public class Game {
             System.out.println("2. Upgrade health potion " + hero.healthPotion.healAmount + " -> " + (hero.healthPotion.healAmount + 50) + " | Price: " + potionUpgradePrice + " Gold");
             System.out.println("3. Exit shop");
             System.out.println();
-            System.out.println("Gold : " + hero.gold);
+            System.out.println("Gold : " + hero.getGold());
             System.out.println();
             int userInput = getUserAction();
 

@@ -10,7 +10,7 @@ public class Print {
     }
 
     void enemyEncounter(Character enemy) {
-        System.out.println("You have encountered a " + enemy.name + "!");
+        System.out.println("You have encountered a " + enemy.getName() + "!");
         System.out.println();
     }
 
