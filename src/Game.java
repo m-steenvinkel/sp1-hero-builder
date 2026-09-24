@@ -21,7 +21,8 @@ public class Game {
         if (userInput == 1) {
             System.out.println("Starting game");
             System.out.println();
-            runGame();
+            boolean running = true;
+            runGame(running);
         } else if (userInput == 2) {
             System.out.println("Exiting");
         } else {
@@ -29,13 +30,32 @@ public class Game {
         }
     }
 
-    public void runGame() {
-        boolean running = true;
+    public void runGame(boolean running) {
 
         while (running) {
-            enemy.revive();
 
-            outOfCombatMenu();
+            int userAction = outOfCombatMenu();
+
+            switch (userAction) {
+                case 1:
+                    System.out.println("Entering the dungeon");
+                    System.out.println();
+                    combat();
+                    break;
+                case 2:
+                    System.out.println("Entering the shop");
+                    System.out.println();
+                    shop();
+                    break;
+                case 3:
+                    chooseWeapon();
+                    break;
+                case 4:
+                    running = false;
+                    break;
+                default:
+                    print.invalidCommand();
+            }
 
             if (!hero.getIsAlive()) {
                 running = false;
@@ -46,6 +66,7 @@ public class Game {
     }
 
     public void combat() {
+        enemy.revive();
         print.enemyEncounter(enemy);
 
         while (hero.getIsAlive() && enemy.getIsAlive()) {
@@ -91,26 +112,13 @@ public class Game {
         return input;
     }
 
-    public void outOfCombatMenu() {
+    public int outOfCombatMenu() {
         hero.printCharacterSheet();
         print.outOfCombatMenu();
 
         int userInput = getUserAction();
 
-        if (userInput == 1) {
-            System.out.println("Entering the dungeon");
-            System.out.println();
-            combat();
-        } else if (userInput == 2) {
-            System.out.println("Entering the shop");
-            System.out.println();
-            shop();
-        } else if (userInput == 3) {
-            chooseWeapon();
-        } else if (userInput == 4) {
-            mainMenu();
-        }
-
+        return userInput;
     }
 
     public void chooseWeapon() {
@@ -126,7 +134,6 @@ public class Game {
         int potionStock = 5;
         boolean inShop = true;
 
-
         while (inShop) {
             System.out.println("=== SHOP ===");
             System.out.println("1. Health potion | Price: " + potionPrice + " Gold | Stock: " + potionStock);
@@ -136,7 +143,6 @@ public class Game {
             System.out.println("Gold : " + hero.getGold());
             System.out.println();
             int userInput = getUserAction();
-
 
             switch (userInput) {
                 case 1:
