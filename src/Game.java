@@ -1,10 +1,10 @@
 import java.util.Scanner;
 
 public class Game {
-    Scanner scanner;
-    Character hero;
-    Character enemy;
-    Print print;
+    private Scanner scanner;
+    private Character hero;
+    private Character enemy;
+    private Print print;
 
     public Game(Scanner scanner, Character hero, Character enemy, Print print) {
         this.scanner = scanner;
@@ -13,7 +13,7 @@ public class Game {
         this.print = print;
     }
 
-    void mainMenu() {
+    public void mainMenu() {
         print.welcome();
         print.menu();
         int userInput = getUserAction();
@@ -29,7 +29,7 @@ public class Game {
         }
     }
 
-    void runGame() {
+    public void runGame() {
         boolean running = true;
 
         while (running) {
@@ -45,7 +45,7 @@ public class Game {
         mainMenu();
     }
 
-    void combat() {
+    public void combat() {
         print.enemyEncounter(enemy);
 
         while (hero.getIsAlive() && enemy.getIsAlive()) {
@@ -53,7 +53,7 @@ public class Game {
             enemy.printSmallCharacterSheet();
             System.out.println("Choose action:");
             System.out.println("1. Attack");
-            System.out.println("2. Heal " + hero.healthPotion.healAmount + " (Potions: " + hero.healthPotion.amount + ")");
+            System.out.println("2. Heal " + hero.healthPotion.getHealAmount() + " (Potions: " + hero.healthPotion.getAmount() + ")");
             System.out.println();
             if (hero.isHealthCritical()) {
                 System.out.println(hero.getName() + "s health is critically low, it is recommended to heal");
@@ -64,10 +64,10 @@ public class Game {
 
             if (input == 1) {
                 hero.attack(enemy);
-                hero.weapons[hero.equippedWeaponIndex].durability -= 1;
-            } else if (input == 2 && hero.healthPotion.amount > 0 ) {
-                hero.heal(hero.healthPotion.healAmount);
-                hero.healthPotion.amount--;
+                hero.getEquippedWeapon().decreaseDurability(1);
+            } else if (input == 2 && hero.healthPotion.getAmount() > 0 ) {
+                hero.heal(hero.healthPotion.getHealAmount());
+                hero.healthPotion.decreaseAmount(1);
             }
 
             if (enemy.getIsAlive()) {
@@ -80,18 +80,18 @@ public class Game {
                 hero.createWeapon();
 
                 enemy.levelUp();
-                enemy.weapons[enemy.equippedWeaponIndex].damage += 5;
+                enemy.getEquippedWeapon().increaseDamage(5);
             }
         }
     }
 
-    int getUserAction() {
+    public int getUserAction() {
         int input = scanner.nextInt();
         scanner.nextLine();
         return input;
     }
 
-    void outOfCombatMenu() {
+    public void outOfCombatMenu() {
         hero.printCharacterSheet();
         print.outOfCombatMenu();
 
@@ -113,14 +113,14 @@ public class Game {
 
     }
 
-    void chooseWeapon() {
+    public void chooseWeapon() {
         hero.printWeapons();
         System.out.println("Type a number to choose your weapon");
         hero.equip(getUserAction());
         System.out.println();
     }
 
-    void shop() {
+    public void shop() {
         double potionPrice = 300;
         double potionUpgradePrice = 1000;
         int potionStock = 5;
@@ -130,7 +130,7 @@ public class Game {
         while (inShop) {
             System.out.println("=== SHOP ===");
             System.out.println("1. Health potion | Price: " + potionPrice + " Gold | Stock: " + potionStock);
-            System.out.println("2. Upgrade health potion " + hero.healthPotion.healAmount + " -> " + (hero.healthPotion.healAmount + 50) + " | Price: " + potionUpgradePrice + " Gold");
+            System.out.println("2. Upgrade health potion " + hero.healthPotion.getHealAmount() + " -> " + (hero.healthPotion.getHealAmount() + 50) + " | Price: " + potionUpgradePrice + " Gold");
             System.out.println("3. Exit shop");
             System.out.println();
             System.out.println("Gold : " + hero.getGold());
@@ -141,7 +141,7 @@ public class Game {
             switch (userInput) {
                 case 1:
                     if (hero.removeGold(potionPrice)) {
-                        hero.healthPotion.amount++;
+                        hero.healthPotion.increaseAmount(1);
                         System.out.println("You have bought a health potion");
                         System.out.println();
                     } else {

@@ -7,12 +7,12 @@ public class Character {
     private int xp;
     private double gold;
     private boolean isAlive;
-    char type;
-    Weapon[] weapons;
-    int equippedWeaponIndex;
+    private char type;
+    private Weapon[] weapons;
+    private Weapon equippedWeapon;
     Item healthPotion;
 
-    Character(String name, int hp, int maxHp, int level, int xp, double gold, boolean isAlive, char type, Weapon[] weapons, Item healthPotion) {
+    public Character(String name, int hp, int maxHp, int level, int xp, double gold, boolean isAlive, char type, Weapon[] weapons, Item healthPotion) {
         this.name = name;
         this.hp = hp;
         this.maxHp = maxHp;
@@ -23,6 +23,7 @@ public class Character {
         this.type = type;
         this.weapons = weapons;
         this.healthPotion = healthPotion;
+        this.equippedWeapon = weapons[0];
     }
 
     public String getName() {
@@ -37,7 +38,11 @@ public class Character {
         return this.isAlive;
     }
 
-    void printCharacterSheet() {
+    public Weapon getEquippedWeapon() {
+        return this.equippedWeapon;
+    }
+
+    public void printCharacterSheet() {
         System.out.println("=== CHARACTER SHEET ===");
 
         System.out.println("Name: " + this.name);
@@ -61,29 +66,29 @@ public class Character {
          */
     }
 
-    void printSmallCharacterSheet() {
+    public void printSmallCharacterSheet() {
         System.out.println("=== " + this.name + " (" + this.type + ")" + " ===");
         System.out.print("Level: " + this.level + " | ");
         System.out.print("Health: " + this.hp + "/" + this.maxHp + " | ");
-        System.out.println("Damage: " + this.weapons[equippedWeaponIndex].damage);
+        System.out.println("Damage: " + this.equippedWeapon.getDamage());
         System.out.println();
 
     }
 
 
-    void printWeapons() {
+    public void printWeapons() {
         System.out.println("=== WEAPONS ===");
         for (int i = 0; i < weapons.length; i++) {
             if (weapons[i] != null) {
-                System.out.print(i + 1 + ". Name: " + weapons[i].name);
-                System.out.print(" | Damage: " + weapons[i].damage);
-                System.out.println(" | Durability: " + weapons[i].durability);
+                System.out.print(i + 1 + ". Name: " + weapons[i].getName());
+                System.out.print(" | Damage: " + weapons[i].getDamage());
+                System.out.println(" | Durability: " + weapons[i].getDurability());
             }
         }
         System.out.println();
     }
 
-    void takeDamage(int amount) {
+    private void takeDamage(int amount) {
 
         this.hp -= amount;
 
@@ -94,7 +99,7 @@ public class Character {
         }
     }
 
-    void heal(int amount) {
+    public void heal(int amount) {
         int tempValue = this.hp;
         this.hp += amount;
 
@@ -105,7 +110,7 @@ public class Character {
         System.out.println(this.name + " heals " + amount + "HP! | " + "Health : " + tempValue + " -> " + this.hp);
     }
 
-    boolean isAlive() {
+    public boolean isAlive() {
         if (this.hp > 0) {
             return true;
         } else {
@@ -113,12 +118,12 @@ public class Character {
         }
     }
 
-    void addGold(double amount) {
+    public void addGold(double amount) {
         this.gold += amount;
         System.out.println(this.name + " gained " + amount + " gold");
     }
 
-    boolean removeGold(double amount) {
+    public boolean removeGold(double amount) {
         if (amount <= this.gold) {
             this.gold -= amount;
             return true;
@@ -127,7 +132,7 @@ public class Character {
         }
     }
 
-    void addXP(int amount) {
+    public void addXP(int amount) {
         this.xp += amount;
 
         if (this.xp >= (1000 * this.level)) {
@@ -136,13 +141,13 @@ public class Character {
         }
     }
 
-    void levelUp() {
+    public void levelUp() {
         this.level++;
         this.xp = 0;
         this.maxHp += 10;
     }
 
-    boolean isHealthCritical() {
+    public boolean isHealthCritical() {
         if (this.hp < (this.maxHp / 4)) {
             return true;
         } else {
@@ -150,26 +155,26 @@ public class Character {
         }
     }
 
-    double getHealthPercent() {
+    public double getHealthPercent() {
         double healthPercent = (1.0 * this.hp / this.maxHp) * 100;
         return healthPercent;
     }
 
-    void attack(Character c) {
-        int damage = this.weapons[equippedWeaponIndex].damage;
+    public void attack(Character c) {
+        int damage = this.equippedWeapon.getDamage();
         System.out.println(this.name + " attacks " + c.name + " for " + damage + " damage!");
         c.takeDamage(damage);
     }
 
 
-    void victoryReward() {
+    public void victoryReward() {
         this.addXP(1500);
         this.heal(20);
         this.addGold(250);
         System.out.println();
     }
 
-    void createWeapon() {
+    public void createWeapon() {
         int min = 20 + this.level;
         int max = min + 3 * this.level;
         int randomDamage = min + (int)(Math.random() * ((max - min) + 1));
@@ -180,12 +185,12 @@ public class Character {
                 break;
             }
         }
-        System.out.println(this.name + " has recieved a new weapon: " + weapons[i].name);
+        System.out.println(this.name + " has recieved a new weapon: " + weapons[i].getName());
         System.out.println();
     }
 
     public void equip(int index) {
-        this.equippedWeaponIndex = index - 1;
+        this.equippedWeapon = weapons[index -1];
     }
 
     public void revive() {
